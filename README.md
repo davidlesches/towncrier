@@ -1,16 +1,16 @@
 # Towncrier
 
-Consider Facebook: when a friend posts an update, a growl notifications pops up on your screen. When someone send you a message, your "messages" icon becomes highlighted. A friends uploads a new profile photo and your notifications counter is incremented.
+Consider Facebook. When a friend posts an update a growl notifications pops up on your screen. When someone send you a message your "messages" icon becomes highlighted. A friend uploads a new profile photo and that triggers your notifications counter being incremented.
 
 Towncrier provides a handy DSL for replicating that kind of UX experience.
 
-Towncrier is a Ruby on Rails gem that allows you to quickly and easily create Javascript notifications for your app. It watches your models, and as resources are created or updated it pushes a Javascript data payload to the specific users you specify. In your assets/javascripts files you can intercept these payloads and react to them, using the data within them to tweak the page in any way you desire.
+Towncrier is a Ruby on Rails gem that allows you to speedily create Javascript notifications for your app. It watches your models, and as resources are created or updated it pushes a Javascript data payload to the users you specify. In your assets/javascripts files you can intercept these payloads and react to them, using the data within them to tweak the page in any way you desire.
 
 ## Cheat Sheet
 
 If you've used Towncrier before, he is a refresher. If you haven't, please read the more detailed instructions below.
 
-1. In the app/criers directory, add a new crier, using the same name as the model you are observing.
+Step 1: In the app/criers directory, add a new crier, using the same name as the model you are observing.
 
 ```ruby
 class AnswerCrier < Towncrier::Base
@@ -21,13 +21,15 @@ class AnswerCrier < Towncrier::Base
   end
 
 end
+```
 
-2. In the assets/javascripts directory, add a listener for the cry and use the payload as you wish.
+Step 2: In the assets/javascripts directory, add a listener for the cry and use the payload as you wish.
 
 ```javascript
 townCry.hearAnswer = function(action, payload) {
   console.log(payload);
 }
+```
 
 ## Opinion
 
