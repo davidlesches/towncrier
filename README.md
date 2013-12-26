@@ -8,7 +8,7 @@ Towncrier is a Ruby on Rails gem that allows you to speedily create Javascript n
 
 ## Cheat Sheet
 
-If you've used Towncrier before, he is a refresher. If you haven't, please read the more detailed instructions below.
+If you've used Towncrier before, here is a refresher. If you haven't, please read the more detailed instructions below.
 
 Step 1: In the app/criers directory, add a new crier, using the same name as the model you are observing.
 
@@ -33,7 +33,7 @@ townCry.hearAnswer = function(action, payload) {
 
 ## Opinion
 
-Like many gems, Towncrier is opinionated software. Towncrier believes that Javascript notifications are UX-sugar only and are not an central part of any app. As a result, Towncrier intentionally has a DSL that forces you to define the notifications outside of your ActiveRecord models, so that your ActiveRecord models do not become cluttered with Towncrier code.
+Like many gems, Towncrier is opinionated software. Towncrier believes that Javascript notifications are UX-sugar only and are not a central part of any app. As a result, Towncrier intentionally has a DSL that forces you to define the notifications outside of your ActiveRecord models, so that your ActiveRecord models do not become cluttered with notification code.
 
 Similarly, when deployed to production, Towncrier will swallow any errors or glitches caused by these notifications so that a syntax error within a notification doesn't trip up your application or trigger a database transaction rollback.
 
@@ -64,11 +64,11 @@ rake db:migrate
 //= require towncrier
 ```
 
-**Step 4:** Remember to start up the Private Pub and Sidekiq (or Resque) processes as explained in their respective documentation.
+Remember to start up the Private Pub and Sidekiq (or Resque) processes as explained in their respective documentation.
 
 ## Setting Up the Targets
 
-You need to define which model in your app represents the users who will be receiving these notifications. In 95% of apps, this will be a User model.
+You need to define which model in your app represents the users ("targets") who will be receiving the notifications. In 95% of apps, this will be a User model.
 
 ```ruby
 class User < ActiveRecord::Base
@@ -76,23 +76,23 @@ class User < ActiveRecord::Base
 end
 ```
 
-Next, add a string column named "towncry_token" to that model.
+Next, add a string column named "towncrier_token" to that model.
 
 ```
-rails generate migration add_towncry_token_to_users towncry_token
+rails generate migration add_towncrier_token_to_users towncry_token
 rake db:migrate
 ```
 
-From this point on, each user's towncry_token will be populated on create. If you already have users in your app, simply re-save them to populate their tokens.
+From this point on, each user's towncrier_token will be populated on create. If you already have users in your app, simply re-save them to populate their tokens.
 
 ```
 User.find_each(&:save)
 ```
 
-Finally, in your application **layout**, add a Javascript listener *before the closing /body tag*. This listens for the notifications coming in for the user.
+Finally, in your application **layout**, add a Javascript listener *before the closing /body tag*. This listens for the notifications coming in for the target.
 
 ```
-<%= subscribe_to(current_user.towncry_channel) if current_user %>
+<%= subscribe_to(current_user.towncrier_channel) if current_user %>
 ```
 
 ## Usage
@@ -255,7 +255,7 @@ end
 
 ## Configuration
 
-A configuration file is stored at 'config/towncrier.yml' and can be edited to tweak the settings.
+A configuration file located at 'config/towncrier.yml' can be edited to tweak the settings.
 
 - **enabled:** whether or not Towncrier runs at all
 - **raise_errors:** whether to throw or swallow errors that occur when Towncrier is queueing a notification to the background process
