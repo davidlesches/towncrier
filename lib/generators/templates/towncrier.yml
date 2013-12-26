@@ -1,0 +1,15 @@
+development:
+  enabled: true
+  raise_errors: true
+  background_worker: :sidekiq
+
+test:
+  enabled: false
+  raise_errors: false
+  background_worker: :sidekiq
+
+production:
+  enabled: true
+  raise_errors: false
+  background_worker: :sidekiq
+
