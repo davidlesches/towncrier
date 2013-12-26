@@ -79,7 +79,7 @@ end
 Next, add a string column named "towncrier_token" to that model.
 
 ```
-rails generate migration add_towncrier_token_to_users towncry_token
+rails generate migration add_towncrier_token_to_users towncrier_token
 rake db:migrate
 ```
 

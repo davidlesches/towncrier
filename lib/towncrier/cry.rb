@@ -44,7 +44,7 @@ module Towncrier
     end
 
     def push_notification target
-      PrivatePub.publish_to(target.towncry_channel, "townCry.hear('#{official_name}', '#{action}', '#{@payload.to_json}')")
+      PrivatePub.publish_to(target.towncrier_channel, "townCry.hear('#{official_name}', '#{action}', '#{@payload.to_json}')")
     end
 
     def save_notification target

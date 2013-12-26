@@ -3,7 +3,7 @@ module Towncrier
 
     def acts_as_towncrier_targets
       has_many :towncries, as: :target, dependent: :destroy
-      before_save :set_towncry_token
+      before_save :set_towncrier_token
 
       include InstanceMethods
     end
@@ -11,16 +11,16 @@ module Towncrier
 
     module InstanceMethods
 
-      def set_towncry_token
-        unless towncry_token.present?
+      def set_towncrier_token
+        unless towncrier_token.present?
           begin
-            self.towncry_token = SecureRandom.hex
-          end while self.class.exists?(towncry_token: towncry_token)
+            self.towncrier_token = SecureRandom.hex
+          end while self.class.exists?(towncrier_token: towncrier_token)
         end
       end
 
-      def towncry_channel
-        "/towncry-#{towncry_token}"
+      def towncrier_channel
+        "/towncrier-#{towncrier_token}"
       end
 
     end
