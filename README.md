@@ -39,28 +39,36 @@ Similarly, when deployed to production, Towncrier will swallow any errors or gli
 
 In short, the idea is to provide a great DSL for these Javascript notifications while keeping them firmly out of the way of the important code.
 
-## Setup
+## App Setup
 
 Towncrier relies on Ryan Bates' excellent [Private Pub gem](https://github.com/ryanb/private_pub) to handle the Javascript pub/sub system under the hood. Towncrier also requires a background process queue. You can use [Sidekiq](https://github.com/mperham/sidekiq) or [Resque](https://github.com/resque/resque), though Sidekiq is recommended.
 
-As a result, the setup seems a little involved. It's not as complex as it seems, and it's worth it.
+**Step 1:** Install Private Pub and Sidekiq (or Resque). Both Private Pub and Sidekiq (or Resque) are somewhat involved to set up. Please see their homepages respectively and ensure they are set up and operating correctly before proceeding with installing Towncrier.
 
-Step 1: Install Private Pub and Sidekiq (or Resque). Both Private Pub and Sidekiq (or Resque) are somewhat involved to set up. Please see their homepages respectively and ensure they are set up and operating correctly before proceeding with installing Towncrier.
-
-Step 2: Add Towncrier to your gemfile.
+**Step 2:** Add Towncrier to your gemfile.
 
 ```
 gem 'towncrier'
 ```
 
-Step 3: Run the generator.
+**Step 3:** Run the generator.
 
 ```
 rails generate towncrier
 rake db:migrate
 ```
 
-Step 4: You need to define which model in your app represents the users who will be receiving these notifications. In 95% of apps, this will be the User model, but if you have a school app with teachers and students, the Teacher and Student models are the targets.
+**Step 4:** Add the JavaScript file to your application.js file manifest.
+
+```
+//= require towncry
+```
+
+**Step 4:** Remember to start up the Private Pub and Sidekiq (or Resque) processes as explained in their respective documentation.
+
+## Setting Up the Targets
+
+You need to define which model in your app represents the users who will be receiving these notifications. In 95% of apps, this will be a User model.
 
 ```ruby
 class User < ActiveRecord::Base
@@ -68,26 +76,123 @@ class User < ActiveRecord::Base
 end
 ```
 
-Then add a string column names "towncry_token" to that model.
+Next, add a string column named "towncry_token" to that model.
 
 ```
 rails generate migration add_towncry_token_to_users towncry_token
 rake db:migrate
 ```
 
-Step 5: Add the JavaScript file to your application.js file manifest.
+From this point on, each user's towncry_token will be populated on create. If you already have users in your app, simply re-save them to populate their tokens.
 
 ```
-//= require towncry
+User.find_each(&:save)
 ```
 
-Step 6: Remember to start up the Private Pub and Sidekiq (or Resque) processes as explained in their respective documentation.
+Finally, in your application **layout**, add a Javascript listener *before the closing </body> tag*. This listens for the notifications coming in for the user.
+
+```
+<%= subscribe_to(current_user.towncry_channel) if current_user %>
+```
 
 ## Usage
 
+Now it's time to go notification crazy :)
 
+For the purposes of this demo, we'll use a fictional StackOverflow app, where users post questions and answers.
 
+Let's say that every time a question is answered a notification should be pushed to the author of the original question. Create a new file called 'answer_crier.rb' in the 'criers' directory.
 
+```ruby
+class AnswerCrier < Towncrier::Base
+
+  on :create do
+    target answer.question.author
+    payload answer # => auto-converted to answer.to_json
+  end
+
+end
+```
+
+Notice the pattern. Naming conventions are everything. Because we are creating notifications when users submit answers, we create a crier class named AnswerCrier. This class inherits from Towncrier::Base, and because it is named AnswerCrier, Towncrier will watch for Answer resources being created or updated and will send out the appropriate notifications.
+
+Notifications can be send on creates, updates, or both, and you can setup multiple notifications each time an answer is submitted.
+
+```ruby
+class AnswerCrier < Towncrier::Base
+
+  on :create do
+    target answer.question.author
+    payload :foo => :bar
+  end
+
+  on :update do
+    target answer.question.author
+    payload :abc => :xyz
+  end
+
+  on :create, :update do
+    target answer.author.followers
+    payload :foo => :bar
+  end
+
+end
+```
+
+For every notification you must define two things, the target and the payload. The target (see section Setting Up the Targets above) can be one user, or multiple.
+
+```ruby
+class AnswerCrier < Towncrier::Base
+
+  # one user
+  on :create do
+    target answer.question.author
+    payload :foo => :bar
+  end
+
+  # lots and lots of users
+  on :create do
+    target (answer.question.author + answer.followers + answer.author.followers)
+    payload :foo => :bar
+  end
+
+end
+```
+
+The payload can be anything that `.to_json` can be called on.
+
+```ruby
+class AnswerCrier < Towncrier::Base
+
+  # a hash payload
+  on :create do
+    target answer.question.author
+    payload :foo => :bar
+  end
+
+  # a resource payload
+  on :create do
+    target answer.question.author
+    payload answer # => equivalent of answer.to_json
+  end
+
+  # a complex hash payload
+  on :create do
+    target answer.question.author
+    payload({
+      :answer => answer,
+      :answer_count => answer.author.answers.count,
+      :complex_stuff => {
+        :foo => :bar,
+        :bar => :foo
+      }
+    })
+  end
+
+end
+```
+
+Notice that in all the examples above, we were able to call 'answer' within the target (eg answer.author) and within the payload. Towncrier does some magic behind the scenes to enable this. Because this crier is the AnswerCrier, Towncrier sets up an 'answer' method that returns the newly created/updated answer resource, allowing you to call 'answer' within the target and payload declarations.
 
 ## Advanced Usage
 
