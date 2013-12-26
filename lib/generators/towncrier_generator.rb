@@ -13,7 +13,7 @@ class TowncrierGenerator < Rails::Generators::Base
     copy_file "towncrier.yml", "config/towncrier.yml"
     copy_file "towncry.rb", "app/models/towncry.rb"
     empty_directory "app/criers"
-    migration_template "create_towncries.rb", "db/migrate/create_towncries_table.rb"
+    migration_template "create_towncries_table.rb", "db/migrate/create_towncries_table.rb"
   end
 
 end
