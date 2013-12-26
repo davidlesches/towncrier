@@ -116,7 +116,7 @@ end
 
 Notice the pattern. Naming conventions are everything. Because we are creating notifications when users submit answers, we create a crier class named AnswerCrier. This class inherits from Towncrier::Base, and because it is named AnswerCrier, Towncrier will watch for Answer resources being created or updated and will send out the appropriate notifications.
 
-Notifications can be sent on creates, updates, or both, and you can setup multiple notifications each time an answer is submitted.
+Notifications can be sent on creates, updates, or both, and you can send multiple notifications each time an answer is submitted.
 
 ```ruby
 class AnswerCrier < Towncrier::Base
@@ -245,7 +245,7 @@ By default, every time a notification is sent a copy of it is stored in the Town
 ```ruby
 class AnswerCrier < Towncrier::Base
 
-  on :create, :update, record: :false do
+  on :create, :update, record: false do
     target answer.question.author
     payload :foo => :bar
   end
