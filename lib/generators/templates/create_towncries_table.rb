@@ -1,4 +1,4 @@
-class CreateTowncries < ActiveRecord::Migration
+class CreateTowncriesTable < ActiveRecord::Migration
   def change
     create_table :towncries do |t|
       t.string :name
