@@ -61,7 +61,7 @@ rake db:migrate
 **Step 4:** Add the JavaScript file to your application.js file manifest.
 
 ```
-//= require towncry
+//= require towncrier
 ```
 
 **Step 4:** Remember to start up the Private Pub and Sidekiq (or Resque) processes as explained in their respective documentation.
@@ -101,7 +101,7 @@ Now it's time to go notification crazy :)
 
 For the purposes of this demo, we'll use a fictional StackOverflow app, where users post questions and answers.
 
-Let's say that every time a question is answered a notification should be pushed to the author of the original question. Create a new file called 'answer_crier.rb' in the 'criers' directory.
+Let's say that every time a question is answered a notification should be pushed to the author of the original question. Create a new file called 'answer_crier.rb' in the 'app/criers' directory.
 
 ```ruby
 class AnswerCrier < Towncrier::Base
@@ -116,7 +116,7 @@ end
 
 Notice the pattern. Naming conventions are everything. Because we are creating notifications when users submit answers, we create a crier class named AnswerCrier. This class inherits from Towncrier::Base, and because it is named AnswerCrier, Towncrier will watch for Answer resources being created or updated and will send out the appropriate notifications.
 
-Notifications can be send on creates, updates, or both, and you can setup multiple notifications each time an answer is submitted.
+Notifications can be sent on creates, updates, or both, and you can setup multiple notifications each time an answer is submitted.
 
 ```ruby
 class AnswerCrier < Towncrier::Base
@@ -139,18 +139,18 @@ class AnswerCrier < Towncrier::Base
 end
 ```
 
-For every notification you must define two things, the target and the payload. The target (see section Setting Up the Targets above) can be one user, or multiple.
+For every notification you must define two things, the target and the payload. The target (see section [Setting Up the Targets above](#setting-up-the-targets)) can be one user, or multiple.
 
 ```ruby
 class AnswerCrier < Towncrier::Base
 
-  # one user
+  # one target
   on :create do
     target answer.question.author
     payload :foo => :bar
   end
 
-  # lots and lots of users
+  # lots and lots of targets
   on :create do
     target (answer.question.author + answer.followers + answer.author.followers)
     payload :foo => :bar
@@ -194,7 +194,64 @@ end
 
 Notice that in all the examples above, we were able to call 'answer' within the target (eg answer.author) and within the payload. Towncrier does some magic behind the scenes to enable this. Because this crier is the AnswerCrier, Towncrier sets up an 'answer' method that returns the newly created/updated answer resource, allowing you to call 'answer' within the target and payload declarations.
 
+Now all this is for sending out the notifications. On the Javascript side, you listen for these notifications by following the same naming convention.
+
+```javascript
+townCry.hearAnswer = function(action, payload) {
+  // action will be a string, either 'create' or 'update'
+  // payload will be the payload in JSON format
+  // for example:
+  console.log("A new answer was just " + action + "d.")
+  console.log(payload);
+}
+```
+
 ## Advanced Usage
+
+#### Custom Naming
+
+For each notification, you can use the `as` option to give the notification a more specific name. This is imperative when you have multiple notifications for a single resource.
+
+```ruby
+class AnswerCrier < Towncrier::Base
+
+  on :create, :update, as: :answer_for_question_author do
+    target answer.question.author
+    payload :foo => :bar
+  end
+
+  on :create, :update, as: :answer_for_followers do
+    target answer.author.followers
+    payload :foo => :bar
+  end
+
+end
+```
+
+```javascript
+townCry.hearAnswerForQuestionAuthor = function(action, payload) {
+  // do something
+}
+
+townCry.hearAnswerForFollowers = function(action, payload) {
+  // do something
+}
+```
+
+#### Persistence
+
+By default, every time a notification is sent a copy of it is stored in the Towncry ActiveRecord table. This allows you to reference those notifications later, in case the user wasn't online at the time it was sent. An obvious use case for this is to populate a Past Notification Feed. If you do not want to save copies to the database, set the `record` option to false.
+
+```ruby
+class AnswerCrier < Towncrier::Base
+
+  on :create, :update, record: :false do
+    target answer.question.author
+    payload :foo => :bar
+  end
+
+end
+```
 
 ## Configuration
 
