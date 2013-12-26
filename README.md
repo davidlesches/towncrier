@@ -89,7 +89,7 @@ From this point on, each user's towncry_token will be populated on create. If yo
 User.find_each(&:save)
 ```
 
-Finally, in your application **layout**, add a Javascript listener *before the closing </body> tag*. This listens for the notifications coming in for the user.
+Finally, in your application **layout**, add a Javascript listener *before the closing /body tag*. This listens for the notifications coming in for the user.
 
 ```
 <%= subscribe_to(current_user.towncry_channel) if current_user %>
