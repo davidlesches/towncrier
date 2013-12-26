@@ -240,7 +240,7 @@ townCry.hearAnswerForFollowers = function(action, payload) {
 
 #### Persistence
 
-By default, every time a notification is sent a copy of it is stored in the Towncry ActiveRecord table. This allows you to reference those notifications later, in case the user wasn't online at the time it was sent. An obvious use case for this is to populate a Past Notification Feed. If you do not want to save copies to the database, set the `record` option to false.
+By default, every time a notification is sent a copy of it is stored in the Towncry ActiveRecord table. This allows you to reference those notifications later. An obvious use case for this is to populate a Past Notification Feed. If you do not want to save copies to the database, set the `record` option to false.
 
 ```ruby
 class AnswerCrier < Towncrier::Base
@@ -255,11 +255,20 @@ end
 
 ## Configuration
 
-## License, Copyright etc
+A configuration file is stored at 'config/towncrier.yml' and can be edited to tweak the settings.
 
+- **enabled:** whether or not Towncrier runs at all
+- **raise_errors:** whether to throw or swallow errors that occur when Towncrier is queueing a notification to the background process
+- **background_worker:** the type of background process to use. Valid values are `:sidekiq` and `:resque`. This can also be set to `false` to run everything in the main process, but doing so is a catastrophically terrible idea.
 
+## License and Copyright
 
+Copyright (C) 2014 David Lesches
+[@davidlesches](http://twitter.com/davidlesches)
 
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 
