@@ -43,6 +43,8 @@ In short, the idea is to provide a great DSL for these Javascript notifications 
 
 Towncrier relies on Ryan Bates' excellent [Private Pub gem](https://github.com/ryanb/private_pub) to handle the Javascript pub/sub system under the hood. Towncrier also requires a background process queue. You can use [Sidekiq](https://github.com/mperham/sidekiq) or [Resque](https://github.com/resque/resque), though Sidekiq is recommended.
 
+As a result, the setup seems a little involved. It's not as complex as it seems, and it's worth it.
+
 Step 1: Install Private Pub and Sidekiq (or Resque). Both Private Pub and Sidekiq (or Resque) are somewhat involved to set up. Please see their homepages respectively and ensure they are set up and operating correctly before proceeding with installing Towncrier.
 
 Step 2: Add Towncrier to your gemfile.
@@ -73,7 +75,13 @@ rails generate migration add_towncry_token_to_users towncry_token
 rake db:migrate
 ```
 
-Step 5: Remember to start up the Private Pub and Sidekiq (or Resque) processes as explained in their respective documentation.
+Step 5: Add the JavaScript file to your application.js file manifest.
+
+```
+//= require towncry
+```
+
+Step 6: Remember to start up the Private Pub and Sidekiq (or Resque) processes as explained in their respective documentation.
 
 ## Usage
 
