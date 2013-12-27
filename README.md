@@ -43,7 +43,7 @@ In short, the idea is to provide a great DSL for these Javascript notifications 
 
 Towncrier relies on Ryan Bates' excellent [Private Pub gem](https://github.com/ryanb/private_pub) to handle the Javascript pub/sub system under the hood. Towncrier also requires a background process queue. You can use [Sidekiq](https://github.com/mperham/sidekiq) or [Resque](https://github.com/resque/resque), though Sidekiq is recommended.
 
-**Step 1:** Install Private Pub and Sidekiq (or Resque). Both Private Pub and Sidekiq (or Resque) are somewhat involved to set up. Please see their homepages respectively and ensure they are set up and operating correctly before proceeding with installing Towncrier.
+**Step 1:** Install Private Pub and Sidekiq (or Resque). Both Private Pub and Sidekiq (or Resque) are somewhat involved to set up. Please see their homepages respectively and ensure they are set up and operating correctly before proceeding with installing Towncrier. (By default, Sidekiq/Resque is used in production mode only. See [Configuration](#configuration) for more.)
 
 **Step 2:** Add Towncrier to your gemfile.
 
@@ -259,7 +259,7 @@ A configuration file located at 'config/towncrier.yml' can be edited to tweak th
 
 - **enabled:** whether or not Towncrier runs at all
 - **raise_errors:** whether to throw or swallow errors that occur when Towncrier is queueing a notification to the background process
-- **background_worker:** the type of background process to use. Valid values are `:sidekiq` and `:resque`. This can also be set to `false` to run everything in the main process, but doing so is a catastrophically terrible idea.
+- **background_worker:** the type of background process to use. Valid values are `:sidekiq` and `:resque`. This can also be set to `false` to run everything in the main process. In development mode, `false` is the default, as not using a background process allows you to rely on Rails autoloading to pick up changes you are making in your codebase as you make them. In production mode however, leaving this setting as `false` is a catastrophically terrible idea.
 
 ## License and Copyright
 

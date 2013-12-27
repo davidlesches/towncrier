@@ -1,12 +1,12 @@
 development:
   enabled: true
   raise_errors: true
-  background_worker: :sidekiq
+  background_worker: false
 
 test:
   enabled: false
   raise_errors: false
-  background_worker: :sidekiq
+  background_worker: false
 
 production:
   enabled: true
