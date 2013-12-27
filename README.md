@@ -26,7 +26,7 @@ end
 Step 2: In the assets/javascripts directory, add a listener for the cry and use the payload as you wish.
 
 ```javascript
-townCry.hearAnswer = function(action, payload) {
+towncrier.hearAnswer = function(action, payload) {
   console.log(payload);
 }
 ```
@@ -173,7 +173,7 @@ class AnswerCrier < Towncrier::Base
   # a resource payload
   on :create do
     target answer.question.author
-    payload answer # => equivalent of answer.to_json
+    payload answer # => will be converted to answer.to_json
   end
 
   # a complex hash payload
@@ -197,7 +197,7 @@ Notice that in all the examples above, we were able to call 'answer' within the 
 Now all this is for sending out the notifications. On the Javascript side, you listen for these notifications by following the same naming convention.
 
 ```javascript
-townCry.hearAnswer = function(action, payload) {
+towncrier.hearAnswer = function(action, payload) {
   // action will be a string, either 'create' or 'update'
   // payload will be the payload in JSON format
   // for example:
@@ -229,11 +229,11 @@ end
 ```
 
 ```javascript
-townCry.hearAnswerForQuestionAuthor = function(action, payload) {
+towncrier.hearAnswerForQuestionAuthor = function(action, payload) {
   // do something
 }
 
-townCry.hearAnswerForFollowers = function(action, payload) {
+towncrier.hearAnswerForFollowers = function(action, payload) {
   // do something
 }
 ```
