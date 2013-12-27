@@ -1,11 +1,11 @@
 (function() {
-  window.townCry = {};
+  window.towncrier = {};
 
-  townCry.hear = function(name, action, payload) {
+  towncrier.hear = function(name, action, payload) {
     var json;
     json = $.parseJSON(payload);
-    if (("hear" + name) in townCry) {
-      return townCry["hear" + name](action, json);
+    if (("hear" + name) in towncrier) {
+      return towncrier["hear" + name](action, json);
     }
   };
 

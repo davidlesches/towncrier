@@ -44,7 +44,7 @@ module Towncrier
     end
 
     def push_notification target
-      PrivatePub.publish_to(target.towncrier_channel, "townCry.hear('#{official_name}', '#{action}', '#{@payload.to_json}')")
+      PrivatePub.publish_to(target.towncrier_channel, "towncrier.hear('#{official_name}', '#{action}', '#{payload_to_json}')")
     end
 
     def save_notification target
@@ -53,8 +53,12 @@ module Towncrier
         :target  => target,
         :crier   => _object,
         :action  => action,
-        :payload => @payload
+        :payload => payload_to_json
       ) if record?
+    end
+
+    def payload_to_json
+      payload.is_a?(String) ? payload : payload.to_json
     end
 
     def crier_class
