@@ -58,7 +58,7 @@ module Towncrier
     end
 
     def payload_to_json
-      payload.is_a?(String) ? payload : payload.to_json
+      @payload.is_a?(String) ? @payload : @payload.to_json
     end
 
     def crier_class
