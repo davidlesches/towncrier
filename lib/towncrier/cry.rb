@@ -53,7 +53,7 @@ module Towncrier
         :target  => target,
         :crier   => _object,
         :action  => action,
-        :payload => @payload.to_json
+        :payload => @payload
       ) if record?
     end
 
