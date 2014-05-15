@@ -4,7 +4,7 @@ Consider Facebook. When a friend posts an update a growl notifications pops up o
 
 Towncrier provides a handy DSL for replicating that kind of UX experience.
 
-Towncrier is a Ruby on Rails gem that allows you to speedily create Javascript notifications for your app. It watches your models, and as resources are created or updated it pushes a Javascript data payload to the users you specify. In your assets/javascripts files you can intercept these payloads and react to them, using the data within them to tweak the page in any way you desire.
+Towncrier is a Ruby on Rails gem that allows you to speedily create Javascript notifications for your app. It watches your models, and as records are created or updated it pushes a Javascript data payload to the users you specify. In your assets/javascripts files you can intercept these payloads and react to them, using the data within them to tweak the page in any way you desire.
 
 ## Cheat Sheet
 
@@ -260,6 +260,10 @@ A configuration file located at 'config/towncrier.yml' can be edited to tweak th
 - **enabled:** whether or not Towncrier runs at all
 - **raise_errors:** whether to throw or swallow errors that occur when Towncrier is queueing a notification to the background process
 - **background_worker:** the type of background process to use. Valid values are `:sidekiq` and `:resque`. This can also be set to `false` to run everything in the main process. In development mode, `false` is the default, as not using a background process allows you to rely on Rails autoloading to pick up changes you are making in your codebase as you make them. In production mode however, leaving this setting as `false` is a catastrophically terrible idea.
+
+## TODO
+
+Add test suite.
 
 ## License and Copyright
 
