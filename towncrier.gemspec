@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.email       = [ 'david@lesches.com' ]
   s.homepage    = 'https://github.com/davidlesches/towncrier'
   s.summary     = "Pub/Sub Notifications for Rails Apps"
-  s.description = "When CRUD actions happen to a Rails database records, towncrier pushes notifications (via pub/sub) to the specific users you specify."
+  s.description = "When CRUD actions happen to Rails database records, towncrier pushes notifications (via pub/sub) to the specific users you specify."
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]
