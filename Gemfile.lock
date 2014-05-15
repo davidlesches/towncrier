@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    towncrier (1.0.0)
+    towncrier (1.0.1)
       private_pub
       rails (~> 4.0.0)
 
