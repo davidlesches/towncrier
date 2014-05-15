@@ -1,3 +1,5 @@
+[![Code Climate](https://codeclimate.com/github/davidlesches/towncrier.png)](https://codeclimate.com/github/davidlesches/towncrier)
+
 # Towncrier
 
 Consider Facebook. When a friend posts an update a growl notifications pops up on your screen. When someone send you a message your "messages" icon becomes highlighted. A friend uploads a new profile photo and that triggers your notifications counter being incremented.
